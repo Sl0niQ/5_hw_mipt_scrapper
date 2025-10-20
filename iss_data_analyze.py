@@ -3,28 +3,31 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import os
 
-file_path = 'iss_data.csv'
+FILE_PATH = 'iss_data.csv' # имя файла с сырыми данными
+CSV_SEPARATOR = ';'        # разделитель в csv файле с данными
+SPEED_SUFFIX_LENGTH = 5    # для отсечения 5ти символов ' km/h'
 
-if os.path.isfile(file_path):
+if os.path.isfile(FILE_PATH):
 
 	# чтение csv файла
-	df = pd.read_csv('iss_data.csv', usecols=['date', 'speed'], sep=';')
+	df = pd.read_csv(FILE_PATH, usecols=['date', 'speed'], sep=CSV_SEPARATOR)
 
 	# обработка данных, преобразование типов
-	df['speed'] = df['speed'].str[:-4].astype(float)
+	df['speed'] = df['speed'].str[:-SPEED_SUFFIX_LENGTH].astype(float)
 	df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d %H:%M:%S')
+
+	# анализ данных
+	max_speed = df['speed'].max()
+	min_speed = df['speed'].min()
 
 	# построение графика
 	plt.figure(figsize=(12, 6))
 	plt.plot(df['date'], df['speed'], linewidth=2)
 	plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))   # только часы:минуты
 	plt.gca().xaxis.set_major_locator(mdates.MinuteLocator(interval=30)) # шаг 30 минут
-	#plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%d.%m %H:%M'))
-	#plt.gca().xaxis.set_major_locator(mdates.HourLocator(interval=1))
-	#plt.xticks(rotation=0)
-
+	
 	# Заголовки, название осей
-	plt.title("Изменение скорости МКС", fontsize=14, fontweight='bold')
+	plt.title(f"Изменение скорости МКС: max={max_speed} км.ч/min={min_speed} км/ч", fontsize=14, fontweight='bold')
 	plt.xlabel("Время", fontsize=12)
 	plt.ylabel("Скорость, км/ч", fontsize=12)
 	plt.grid(True, alpha=0.3)
