@@ -20,5 +20,5 @@
 
 ## Пример результата анализа
 <p align="center">
- <img width="200px" src="speed_analyze_result.png" alt="qr"/>
+ <img width="80%" src="speed_analyze_result.png" alt="qr"/>
 </p>
